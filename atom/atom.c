@@ -208,3 +208,38 @@ void atom_aload(const char *str[])
 		atom_string(str[i]);
 	}
 }
+
+
+void atom_add(const char *str, int len)
+{
+	unsigned long h;
+	int i;
+	struct atom *p;
+
+	assert(str);
+	assert(len >= 0);
+	for (h = 0, i = 0; i < len; i++)
+	{
+		h = (h<<1) + scatter[(unsigned char)str[i]];
+	}
+	h %= NELEMS(buckets);
+
+	for (p = buckets[h]; p; p = p->link)
+	{
+		if (len == p->len) 
+		{
+			for (i = 0; i < len && p->str[i] == str[i] ;)
+				i++;
+			
+			if (i == len)
+				return p->str;
+		}
+	}
+
+	p = ALLOC(sizeof(*p));
+	p->len = len;
+	p->str = str;
+	p->link = buckets[h];
+	buckets[h] = p;
+	return p->str;
+}

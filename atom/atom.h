@@ -9,5 +9,6 @@ extern 	void 		atom_free	(const char *str);
 extern  void 		atom_reset	(void);
 extern 	void 		atom_vload 	(const char *str, ...);
 extern	void 		atom_aload	(const char *strs[]);
+extern  void 		atom_add 	(const char *str, int len);
 
 #endif
