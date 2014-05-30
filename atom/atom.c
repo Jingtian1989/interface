@@ -7,6 +7,8 @@
 
 #define NELEMS(x) ((sizeof(x)) / (sizeof((x)[0])))
 
+//	map char into random integer
+//	generate the table by standard c rand()
 static unsigned long scatter[] = {
 	2078917053, 143302914, 	1027100827, 1953210302, 755253631, 	2002600785,
 	1405390230, 45248011, 	1099951567, 433832350, 	2018585307, 438263339,
@@ -129,4 +131,22 @@ const char *atom_new(const char *str, int len)
 	p->link = buckets[h];
 	buckets[h] = p;
 	return p->str;
+}
+
+int atom_length(const char *str)
+{
+	struct atom *p;
+	int i;
+
+	assert(str);
+	for (i = 0; i < NELEMS(buckets); i++)
+	{
+		for (p = buckets[i]; p; p->link)
+		{
+			if (p->str == str)
+				return p->len;
+		}
+	}
+	assert(0);
+	return 0;
 }
