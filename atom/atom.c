@@ -1,8 +1,10 @@
 #include <string.h>
 #include <limits.h>
+#include <stdarg.h> 
 #include "assert.h"
 #include "atom.h"
 #include "mem.h"
+
 
 
 #define NELEMS(x) ((sizeof(x)) / (sizeof((x)[0])))
@@ -141,7 +143,7 @@ int atom_length(const char *str)
 	assert(str);
 	for (i = 0; i < NELEMS(buckets); i++)
 	{
-		for (p = buckets[i]; p; p->link)
+		for (p = buckets[i]; p; p = p->link)
 		{
 			if (p->str == str)
 				return p->len;
@@ -149,4 +151,60 @@ int atom_length(const char *str)
 	}
 	assert(0);
 	return 0;
+}
+
+void atom_free(const char *str)
+{
+	struct atom *p;
+	int i;
+
+	assert(str);
+	for (i = 0; i < NELEMS(buckets); i++)
+	{
+		for (p = buckets[i]; p; p = p->link)
+		{
+			if (p->str == str)
+				break;
+		}
+	}
+	assert(p);
+	FREE(p);
+}
+
+void atom_reset(void)
+{
+	struct atom *p, *u;
+	int i;
+
+	for (i = 0; i < NELEMS(buckets); i++)
+	{
+		for (p = buckets[i]; p; p = u)
+		{
+			u = p->link;
+			FREE(p);
+		}
+	}
+}
+
+void atom_vload(const char *str, ...)
+{
+	va_list argptr;
+	
+	assert(str);
+	atom_string(str);
+	va_start(argptr, str);
+	while ((str = va_arg(argptr, const char *)) != NULL)
+		atom_string(str);
+
+}
+
+void atom_aload(const char *str[])
+{
+	int i;
+
+	assert(str);
+	for (i = 0; str[i] != NULL; i++)
+	{
+		atom_string(str[i]);
+	}
 }
