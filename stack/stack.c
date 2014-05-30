@@ -45,7 +45,7 @@ void stack_push(T s, void *x)
 }
 
 
-void stack_pop(T s)
+void *stack_pop(T s)
 {
 	void *x;
 	struct elem *t;
