@@ -68,6 +68,7 @@ extern const except_t assert_failed;
 
 extern void except_raise(const T *e, const char *file, int line);
 
+extern void except_raise_dbg(const T *e, const char *file, int line);
 
 
 #undef T
