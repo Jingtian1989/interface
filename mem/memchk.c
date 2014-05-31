@@ -129,7 +129,7 @@ void *mem_alloc(long nbytes, const char *file, int line)
 				if (file == NULL)
 					RAISE(mem_failed);
 				else
-					except_raise(&mem_failed, file, NULL);
+					except_raise(&mem_failed, file, line);
 			}
 
 		}
@@ -142,7 +142,7 @@ void *mem_alloc(long nbytes, const char *file, int line)
 				if (file == NULL)
 					RAISE(mem_failed);
 				else
-					except_raise(&mem_failed, file, NULL);
+					except_raise(&mem_failed, file, line);
 			}
 			newptr->free = freelist.free;
 			freelist.free = newptr;
