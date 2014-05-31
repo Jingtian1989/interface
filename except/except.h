@@ -6,7 +6,7 @@
 #define T except_t
 #define RAISE(e) except_raise(&(e), __FILE__, __LINE__)
 #define RERAISE(e) except_raise(except_frame.exception, except_frame.file, except_frame.line)
-#define RETURN switch(<pop 41>, 0) default : return
+#define RETURN switch(except_stack = except_stack->prev, 0) default : return
 
 #define TRY do { \
 	volatile int except_flag; \ 
@@ -44,6 +44,7 @@
 			except_stack = except_stack->prev; \
 		} if (except_flag == except_raised) RERAISE; \
 	} while(0)
+
 
 
 typedef struct T 
