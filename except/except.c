@@ -18,8 +18,8 @@ static void except_backtrace()
 	char **strings;
 	nptrs = backtrace(buffer, SIZE);
 	strings = backtrace_symbols(buffer, nptrs);
- 	for (j = 0; j < nptrs; j++)
-       fprintf(stderr, "%s\n", strings[j]);
+	for (j = 0; j < nptrs; j++)
+		fprintf(stderr, "%s\n", strings[j]);
 	free(strings);
 }
 
