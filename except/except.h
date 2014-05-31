@@ -64,6 +64,7 @@ typedef struct except_frame
 enum {except_entered = 0, except_raised, except_handled, except_finalized};
 
 extern except_frame *except_stack;
+extern const except_t assert_failed;
 
 extern void except_raise(const T *e, const char *file, int line);
 
