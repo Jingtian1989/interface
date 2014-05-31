@@ -24,7 +24,7 @@ static void except_backtrace()
 }
 
 
-static void except_uncaught(const T *e, const char *file, int line, int dbg)
+static void except_uncaught(const T *e, const char *file, int line)
 {
 	fprintf(stderr, "Uncaught exception");
 	if (e->reason)
@@ -34,21 +34,20 @@ static void except_uncaught(const T *e, const char *file, int line, int dbg)
 	if (file && line > 0)
 		fprintf(stderr, " raised at %s:%d\n", file, line);
 
-	if (dbg)
-		except_backtrace();
+	except_backtrace();
 	fprintf(stderr, "aborting...\n");
 	fflush(stderr);
 	
 }
 
-static void except_raise_core(const T *e, const char *file, int line, int dbg)
+void except_raise(const T *e, const char *file, int line)
 {
 	except_frame *p = except_stack;
 
 	assert(e);
 	if (p == NULL)
 	{
-		except_uncaught(e, file, line, dbg);
+		except_uncaught(e, file, line);
 		abort();
 	}
 	p->exception = e;
@@ -56,14 +55,4 @@ static void except_raise_core(const T *e, const char *file, int line, int dbg)
 	p->line = line;
 	except_stack = except_stack->prev;
 	longjmp(p->env, except_raised);
-}
-
-void except_raise(const T *e, const char *file, int line)
-{
-	except_raise_core(e, file, line, 0);
-}
-
-void except_raise_dbg(const T *e, const char *file, int line)
-{
-	except_raise_dbg(e, file, line, 1);
 }
