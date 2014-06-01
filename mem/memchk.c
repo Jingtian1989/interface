@@ -25,6 +25,8 @@ union align
 #define NALLOC ((4096 + sizeof(union align) - 1) / \
 	(sizeof(union align))) * (sizeof(union align))
 
+#define NELEMS(t) ((sizeof(t))/(sizeof((t)[0])))
+
 const except_t mem_failed = {"allocation failed"};
 
 static struct descriptor 
@@ -105,6 +107,15 @@ void *mem_calloc(long count, long nbytes, const char *file, int line)
 	return ptr;
 }
 
+static struct descriptor *find(const void *ptr)
+{
+	struct descriptor *bp = htab[hash(ptr, htab)];
+
+	while (bp && bp->ptr != ptr)
+		bp = bp->link;
+	return bp;
+}
+
 static struct descriptor *dalloc(void *ptr, long size, const char *file, int line)
 {
 	static struct descriptor *avail;
@@ -181,4 +192,25 @@ void mem_log(FILE *log)
 	logger = log;
 }
 
+void mem_leak(void (*apply)(void *ptr, long size, const char *file, int line, void *cl), void *cl)
+{
+	struct descriptor *bp;
+	int i;
 
+	for (i = 0; i < NELEMS(htab); i++)
+	{
+		for (bp = htab[i]; bp; bp->link)
+		{
+			apply(bp->ptr, bp->size, bp->file, bp->line, cl);
+		}
+	}
+}
+
+
+static void inuse(void *ptr, long size, const char *file, int line, void *cl)
+{
+	FILE *logger = (FILE *)cl;
+
+	fprintf(logger, "** memory in use at %p\n", ptr);
+	fprintf(logger, "this block is %ld bytes long and was allocated from %s:%d\n", size, file, line);
+}
