@@ -40,6 +40,8 @@ static struct descriptor
 
 static struct descriptor freelist = {&freelist};
 
+static FILE *logger;
+
 
 void mem_free(void *ptr, const char *file, int line)
 {
@@ -48,9 +50,19 @@ void mem_free(void *ptr, const char *file, int line)
 		struct descriptor *bp;
 		if (((unsigned long)ptr)%(sizeof(union align)) != 0 || (bp = find(ptr)) == NULL ||
 			bp->free)
-			except_raise(&mem_failed, find, line);
-		bp->free = freelist.free;
-		freelist.free = bp;
+		{
+			if (logger != NULL)
+			{
+				fprintf(logger, "** freeing free memory\n");
+				fprintf(logger, "mem_free(%p) called from %s:%d\n",ptr, file,line);
+				fprintf(logger, "this block is %d bytes long and was allocated from %s:%d\n",bp->size, bp->file, bp->line);
+			} else
+				except_raise(&assert_failed, file, line);
+		} else
+		{
+			bp->free = freelist.free;
+			freelist.free = bp;
+		}
 	}
 }
 
@@ -64,11 +76,22 @@ void *mem_resize(void *ptr, long nbytes, const char *file, int line)
 	assert(nbytes > 0);
 	if (((unsigned long)ptr)%(sizeof(union align)) != 0 || (bp = find(ptr)) == NULL ||
 		bp->free)
-		except_raise(&mem_failed, find, line);
-	newptr = mem_alloc(nbytes, file, line);
-	memcpy(newptr, ptr, nbytes < bp->size ? nbytes : bp->size);
-	mem_free(ptr);
-	return newptr;
+	{
+		if (logger != NULL)
+		{
+			fprintf(logger, "** resizing unallocated memory\n");
+			fprintf(logger, "mem_resize(%p, %ld) called from %s:%d\n", ptr, nbytes, file, line);
+		} else
+			except_raise(&assert_failed, file, line);
+
+	} else {
+		newptr = mem_alloc(nbytes, file, line);
+		memcpy(newptr, ptr, nbytes < bp->size ? nbytes : bp->size);
+		mem_free(ptr);
+		return newptr;
+	}
+		
+	
 }
 
 void *mem_calloc(long count, long nbytes, const char *file, int line)
@@ -151,3 +174,11 @@ void *mem_alloc(long nbytes, const char *file, int line)
 	assert(0);
 	return NULL;
 }
+
+
+void mem_log(FILE *log)
+{
+	logger = log;
+}
+
+
