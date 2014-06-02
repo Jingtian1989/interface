@@ -16,10 +16,10 @@ extern  T 		list_list 	(void *x, ...);
 extern 	T 		list_pop 	(T list, void **x);
 extern 	T 		list_push 	(T list, void *x);
 extern  T 		list_reverse(T list);
-extern 	int 	list_length	(T list);
+extern 	int		list_length	(T list);
 extern 	void	list_free	(T *list);
-extern 	void 	list_map	(T list, void (*apply)(void **x, void *cl), void *cl);
-extern void	  **list_toarray(T list, void *end);
+extern 	void	list_map	(T list, void (*apply)(void **x, void *cl), void *cl);
+extern	void	**list_toarray(T list, void *end);
 
 #undef T
 #endif
