@@ -20,11 +20,11 @@
 
 extern const except_t mem_failed;
 
-extern void *mem_alloc	(long nbytes, const char *file, int line);
-extern void *mem_calloc	(long count, long nbytes, const char *file, int line);
-extern void *mem_resize	(void *ptr, long nbytes, const char *file, int line);
-extern void  mem_free	(void *ptr, const char *file, int line);
-extern void  mem_log	(FILE *log);
-extern void  mem_leak	(void (*apply)(void *ptr, long size, const char *file, int line, void *cl), void *cl)
+extern void *mem_alloc(long nbytes, const char *file, int line);
+extern void *mem_calloc(long count, long nbytes, const char *file, int line);
+extern void *mem_resize(void *ptr, long nbytes, const char *file, int line);
+extern void  mem_free(void *ptr, const char *file, int line);
+extern void  mem_log(FILE *log);
+extern void  mem_leak(void (*apply)(void *ptr, long size, const char *file, int line, void *cl), void *cl)
 
 #endif
