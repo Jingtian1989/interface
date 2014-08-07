@@ -58,6 +58,8 @@ static btree_split_child(struct node *x, int i, struct node *y)
 	z = alloc_node(tree->t);
 	z->is_leaf = y->is_leaf;
 	z->count = tree->t - 1;
+	z->tree = tree;
+	
 	for (j = 0; j < t; j++)
 	{
 		z->keys[j] = y->keys[t + j];
@@ -127,6 +129,7 @@ void btree_insert(T tree, int key)
 		node->is_leaf = 0;
 		node->count = 0;
 		node->childs[0] = root;
+		node->tree = tree;
 		btree_split_child(node, 0, root);
 		root = node;
 	}
