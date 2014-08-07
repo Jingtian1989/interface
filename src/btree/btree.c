@@ -119,7 +119,7 @@ void btree_insert(T tree, int key)
 {
 	int t = tree->t;
 	int max = t << 1;
-	struct node *root, node;
+	struct node *root, *node;
 	root = tree->root;
 	if (root->count == max - 1)
 	{
