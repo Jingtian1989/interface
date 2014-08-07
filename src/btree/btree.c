@@ -97,14 +97,18 @@ static void btree_insert_nofull(struct node *node, int key)
 
 	if (node->is_leaf)
 	{
-		while (i >= 0 && key < node->key[i])
+		while (i >= 0 && key < node->keys[i])
+		{
+			node->keys[i + 1] = node->keys[i];
 			i--;
-		node->key[i + 1] = k;
+		}
+			
+		node->keys[i + 1] = key;
 		node->count++;
 		disk_write(node);
 	}else
 	{
-		while (i >= 0 && key < node->key[i])
+		while (i >= 0 && key < node->keys[i])
 			i--;
 		disk_read(node->childs[i]);
 		if (node->childs[i]->count == max - 1)
