@@ -59,7 +59,7 @@ static btree_split_child(struct node *x, int i, struct node *y)
 	z->is_leaf = y->is_leaf;
 	z->count = tree->t - 1;
 	z->tree = tree;
-	
+
 	for (j = 0; j < t; j++)
 	{
 		z->keys[j] = y->keys[t + j];
@@ -91,7 +91,7 @@ static btree_split_child(struct node *x, int i, struct node *y)
 
 static void btree_insert_nofull(struct node *node, int key)
 {
-	int i = node->count;
+	int i = node->count - 1;
 	int t = node->tree->t;
 	int max = t << 1;
 
