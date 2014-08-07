@@ -53,11 +53,13 @@ static btree_split_child(struct node *x, int i, struct node *y)
 	int j, t;
 	T tree;
 	struct node *z;
-	tree = x->tree;
+
 	t = tree->t;
-	z = alloc_node(tree->t);
+	tree = x->tree;
+	
+	z = alloc_node(t);
 	z->is_leaf = y->is_leaf;
-	z->count = tree->t - 1;
+	z->count = t - 1;
 	z->tree = tree;
 
 	for (j = 0; j < t; j++)
