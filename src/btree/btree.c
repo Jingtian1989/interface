@@ -75,12 +75,12 @@ static btree_split_child(struct node *x, int i, struct node *y)
 		}
 	}
 	y->count = t - 1;
-	for (j = x->count + 1; j > i; j--)
+	for (j = x->count; j > i; j--)
 	{
 		x->childs[j + 1] = x->childs[j];
 	}
 	x->childs[i + 1] = z;
-	for (j = x->count; j >= i; j--)
+	for (j = x->count-1; j >= i; j--)
 	{
 		x->keys[j + 1] = x->keys[i];
 	}
