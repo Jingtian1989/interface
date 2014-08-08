@@ -29,7 +29,7 @@ T set_make(int key)
 }
 
 
-T set_union(T set1, T set2)
+void set_union(T set1, T set2)
 {
 	struct node *ptr;
 	ptr = set1->tail;
@@ -39,5 +39,4 @@ T set_union(T set1, T set2)
 	{
 		ptr->head = set1->head;
 	}
-	return set1;
 }
